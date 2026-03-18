@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Product image placeholder</title>
+  <desc id="desc">A neutral placeholder card shown when a product image is unavailable.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f3ede5"/>
+      <stop offset="100%" stop-color="#e6dacb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <g fill="#6f4e37" opacity="0.9" transform="translate(600 450)">
+    <circle r="120" fill="none" stroke="#6f4e37" stroke-width="24"/>
+    <path d="M-85 18h170c0 52-38 94-85 94s-85-42-85-94z"/>
+    <rect x="-140" y="150" width="280" height="24" rx="12"/>
+  </g>
+  <text x="50%" y="78%" text-anchor="middle" fill="#5a3928" font-size="44" font-family="Georgia, serif">
+    Image coming soon
+  </text>
+</svg>

@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  background-color: #fff8ef;
+  background-image: radial-gradient(circle at 15% 20%, rgba(200, 162, 125, 0.22), transparent 35%),
+    radial-gradient(circle at 85% 10%, rgba(138, 91, 60, 0.16), transparent 30%);
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Playfair Display", serif;
+}
+
+@layer utilities {
+  .soft-card {
+    @apply rounded-2xl bg-white/95 shadow-soft ring-1 ring-coffee-100;
+  }
+}
