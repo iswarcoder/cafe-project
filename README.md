@@ -17,9 +17,7 @@ This is a full stack cafe project with frontend and backend.
 - frontend/
 - backend/
 
-## ⚙️ Installation
-1. Clone repo:
-git clone https://github.com/your-username/cafe-project.git
+
 
 2. Install dependencies:
 cd frontend
