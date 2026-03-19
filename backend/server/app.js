@@ -39,6 +39,14 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
+app.get("/", (req, res) => {
+  res.send("API is running 🚀");
+});
+
+app.get("/api", (req, res) => {
+  res.json({ message: "API working ✅" });
+});
+
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Cafe API is running" });
 });
