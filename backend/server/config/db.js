@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server-core";
+import path from "path";
+import { mkdirSync } from "fs";
 
 let memoryServer;
 
@@ -23,9 +25,15 @@ const connectDB = async () => {
 
     console.warn(`Primary MongoDB unavailable (${error.message}). Starting in-memory MongoDB...`);
 
+    const fallbackDbPath = path.resolve(process.cwd(), ".mongo-fallback-data");
+    mkdirSync(fallbackDbPath, { recursive: true });
+
     memoryServer = await MongoMemoryServer.create({
       binary: {
         version: process.env.MONGO_MEMORY_VERSION || "7.0.14"
+      },
+      instance: {
+        dbPath: fallbackDbPath
       }
     });
 

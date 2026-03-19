@@ -5,16 +5,18 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("cafe_user");
+    const savedUser = sessionStorage.getItem("cafe_user") || localStorage.getItem("cafe_user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
   const [isLoading, setIsLoading] = useState(false);
-  const hasToken = Boolean(localStorage.getItem("cafe_token"));
+  const hasToken = Boolean(sessionStorage.getItem("cafe_token") || localStorage.getItem("cafe_token"));
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem("cafe_user", JSON.stringify(user));
+      sessionStorage.setItem("cafe_user", JSON.stringify(user));
+      localStorage.removeItem("cafe_user");
     } else {
+      sessionStorage.removeItem("cafe_user");
       localStorage.removeItem("cafe_user");
     }
   }, [user]);
@@ -24,9 +26,10 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await api.post("/api/auth/login", payload);
       if (data?.token) {
-        localStorage.setItem("cafe_token", data.token);
+        sessionStorage.setItem("cafe_token", data.token);
+        localStorage.removeItem("cafe_token");
       }
-      setUser(data?.user || { name: payload.identifier || payload.email });
+      setUser(data?.user || { name: payload.email, email: payload.email });
       return data;
     } finally {
       setIsLoading(false);
@@ -38,7 +41,8 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await api.post("/api/auth/register", payload);
       if (data?.token) {
-        localStorage.setItem("cafe_token", data.token);
+        sessionStorage.setItem("cafe_token", data.token);
+        localStorage.removeItem("cafe_token");
       }
       setUser(data?.user || { name: payload.name, email: payload.email });
       return data;
@@ -48,7 +52,10 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    sessionStorage.removeItem("cafe_token");
+    sessionStorage.removeItem("cafe_user");
     localStorage.removeItem("cafe_token");
+    localStorage.removeItem("cafe_user");
     setUser(null);
   };
 

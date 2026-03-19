@@ -25,3 +25,6 @@ Thumbs.db
 *.pid
 *.seed
 *.pid.lock
+
+# Local fallback database files
+**/.mongo-fallback-data/

@@ -4,17 +4,19 @@ import generateToken from "../utils/generateToken.js";
 export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedName = (name || "").trim();
+    const normalizedEmail = (email || "").trim().toLowerCase();
 
-    if (!name || !email || !password) {
+    if (!normalizedName || !normalizedEmail || !password) {
       return res.status(400).json({ message: "Name, email and password are required" });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name: normalizedName, email: normalizedEmail, password });
     const token = generateToken({ id: user._id, role: user.role });
 
     return res.status(201).json({
@@ -35,33 +37,27 @@ export const registerUser = async (req, res, next) => {
 
 export const loginUser = async (req, res, next) => {
   try {
-    const { email, identifier, password } = req.body;
-    const rawIdentifier = (identifier || email || "").trim();
+    const { email, identifier, username, password } = req.body;
+    const normalizedEmail = (email || identifier || username || "").trim().toLowerCase();
 
-    if (!rawIdentifier || !password) {
-      return res.status(400).json({ message: "Email/User ID and password are required" });
+    if (!normalizedEmail || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const isObjectId = /^[a-fA-F0-9]{24}$/.test(rawIdentifier);
-    const isEmail = /^\S+@\S+\.\S+$/.test(rawIdentifier);
-
-    let query;
-    if (isObjectId) {
-      query = { _id: rawIdentifier };
-    } else if (isEmail) {
-      query = { email: rawIdentifier.toLowerCase() };
-    } else {
-      query = { name: rawIdentifier };
+    if (!/^\S+@\S+\.\S+$/.test(normalizedEmail)) {
+      return res.status(400).json({ message: "Please enter a valid email address" });
     }
+
+    const query = { email: normalizedEmail };
 
     const user = await User.findOne(query).select("+password");
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const token = generateToken({ id: user._id, role: user.role });
