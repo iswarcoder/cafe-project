@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
 import morgan from "morgan";
 import authRoutes from "./routes/authRoutes.js";
 import menuRoutes from "./routes/menuRoutes.js";
@@ -32,15 +31,15 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
 app.get("/", (req, res) => {
-  res.send("API is running 🚀");
+  res.send("Server is running 🚀");
 });
 
 app.get("/api", (req, res) => {
