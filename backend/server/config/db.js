@@ -28,14 +28,24 @@ const connectDB = async () => {
     const fallbackDbPath = path.resolve(process.cwd(), ".mongo-fallback-data");
     mkdirSync(fallbackDbPath, { recursive: true });
 
-    memoryServer = await MongoMemoryServer.create({
-      binary: {
-        version: process.env.MONGO_MEMORY_VERSION || "7.0.14"
-      },
-      instance: {
-        dbPath: fallbackDbPath
-      }
-    });
+    try {
+      memoryServer = await MongoMemoryServer.create({
+        binary: {
+          version: process.env.MONGO_MEMORY_VERSION || "7.0.14"
+        },
+        instance: {
+          dbPath: fallbackDbPath
+        }
+      });
+    } catch (memoryError) {
+      console.warn(`Fallback DB path busy (${memoryError.message}). Retrying with temp storage...`);
+
+      memoryServer = await MongoMemoryServer.create({
+        binary: {
+          version: process.env.MONGO_MEMORY_VERSION || "7.0.14"
+        }
+      });
+    }
 
     const inMemoryUri = memoryServer.getUri();
     const memConn = await mongoose.connect(inMemoryUri, {
