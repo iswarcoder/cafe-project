@@ -14,13 +14,12 @@ const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000
+      serverSelectionTimeoutMS: 10000
     });
     console.log(`MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
     if (process.env.NODE_ENV === "production") {
-      console.error(`Database connection failed: ${error.message}`);
-      process.exit(1);
+      throw new Error(`Database connection failed: ${error.message}`);
     }
 
     console.warn(`Primary MongoDB unavailable (${error.message}). Starting in-memory MongoDB...`);
